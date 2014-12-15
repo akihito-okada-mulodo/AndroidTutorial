@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/push"
         android:layout_gravity="center"
-        android:text="Pop"
+        android:text="@string/button_pop"
         android:onClick="selectedButton"
         android:background="@drawable/button_red"
         android:textColor="@android:color/white"/>
