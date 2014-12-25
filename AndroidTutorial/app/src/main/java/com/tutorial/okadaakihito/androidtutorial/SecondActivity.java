@@ -38,7 +38,7 @@ public class SecondActivity extends ActionBarActivity {
 
         switch(id) {
             case R.id.push:
-                Intent intent = new Intent(getApplicationContext(), ThirdActivity.class);
+                Intent intent = new Intent(this, ThirdActivity.class);
                 intent.putExtra("KEYWORD", "keywordStr");
                 startActivityForResult(intent, 0);
                 overridePendingTransition(0, 0);

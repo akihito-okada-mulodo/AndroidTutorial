@@ -16,13 +16,13 @@ public class SplashActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_splash);
 		getSupportActionBar().hide();
 
-        new Handler().postDelayed( delayStartActivity, 1500);;
+        new Handler().postDelayed( delayStartActivity, 1500);
 	}
 
     private final Runnable delayStartActivity = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
             intent.putExtra("KEYWORD", "keywordStr");
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
