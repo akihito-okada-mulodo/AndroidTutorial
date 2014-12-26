@@ -17,5 +17,4 @@
     <string name="hello_world">Hello world!</string>
     <string name="tutorial_1">画面遷移サンプル</string>
     <string name="tutorial_2">リストビューサンプル</string>
-    git push origin master
 </resources>
