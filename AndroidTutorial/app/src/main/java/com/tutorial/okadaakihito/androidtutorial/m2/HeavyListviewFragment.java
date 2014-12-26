@@ -149,9 +149,9 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroy() {
         ImageCache.clearCache();
-        super.onDestroyView();
+        super.onDestroy();
     }
 
     @Override
