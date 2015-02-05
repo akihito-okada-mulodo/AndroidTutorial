@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -50,8 +51,6 @@ class ImageGetTask extends AsyncTask<String,Void,Bitmap> {
                 return image;
             } catch (MalformedURLException e) {
                 return null;
-            } catch (IOException e) {
-                return null;
             }
         }
     }
@@ -86,11 +85,7 @@ class ImageGetTask extends AsyncTask<String,Void,Bitmap> {
             }
         }
 
-        // 画像サイズ情報を取得する
-        BitmapFactory.Options imageOptions = new BitmapFactory.Options();
-        imageOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, imageOptions);
-        Log.v("image", "Original Image Size: " + imageOptions.outWidth + " x " + imageOptions.outHeight);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
         try {
             inputStream.close();
@@ -99,47 +94,25 @@ class ImageGetTask extends AsyncTask<String,Void,Bitmap> {
             return null;
         }
 
-        // もし、画像が大きかったら縮小して読み込む
-        // 今回はimageSizeMaxの大きさに合わせる
-        Bitmap bitmap;
-        int imageSizeMax = 500;
-        inputStream = null;
-        if (imageUrl != null) {
-            try {
-                inputStream = (InputStream) imageUrl.getContent();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+        DisplayMetrics metrics = MetrixCache.get();
+
+        if (metrics != null) {
+            // 画像サイズ情報を取得する
+            Log.v("image", "Original Image Size: " + bitmap.getWidth() + " x " + bitmap.getHeight());
+
+            float scale = (float) bitmap.getWidth() / metrics.widthPixels;
+
+            if (scale > 1) {
+                int imageWidth = (int) (bitmap.getWidth() / scale);
+                int imageHeight = (int) (bitmap.getHeight() / scale);
+
+                bitmap = Bitmap.createScaledBitmap(
+                        bitmap,
+                        imageWidth,
+                        imageHeight,
+                        false);
             }
         }
-        float imageScaleWidth = (float)imageOptions.outWidth / imageSizeMax;
-        float imageScaleHeight = (float)imageOptions.outHeight / imageSizeMax;
-
-        // もしも、縮小できるサイズならば、縮小して読み込む
-        if (imageScaleWidth > 2 && imageScaleHeight > 2) {
-            BitmapFactory.Options imageOptions2 = new BitmapFactory.Options();
-
-            // 縦横、小さい方に縮小するスケールを合わせる
-            int imageScale = (int)Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
-
-            // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
-            for (int i = 2; i <= imageScale; i *= 2) {
-                imageOptions2.inSampleSize = i;
-            }
-
-            bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions2);
-            Log.v("image", "Sample Size: 1/" + imageOptions2.inSampleSize);
-        } else {
-            bitmap = BitmapFactory.decodeStream(inputStream);
-        }
-
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-
         return bitmap;
     }
 }

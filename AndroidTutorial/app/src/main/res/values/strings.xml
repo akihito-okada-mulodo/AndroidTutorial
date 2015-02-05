@@ -15,6 +15,6 @@
     <string name="button_fragment">Fragment</string>
     <string name="title_activity_menu">MenuActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="tutorial_1">画面遷移サンプル</string>
-    <string name="tutorial_2">リストビューサンプル</string>
+    <string name="tutorial_1">01. 画面遷移サンプル</string>
+    <string name="tutorial_2">02. リストビューサンプル</string>
 </resources>
