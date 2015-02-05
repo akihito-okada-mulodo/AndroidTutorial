@@ -1,5 +1,6 @@
 package com.tutorial.okadaakihito.androidtutorial.m2;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
@@ -25,4 +26,16 @@ public class HeavyListviewActivity extends ActionBarActivity implements HeavyLis
     public void onFragmentInteraction(String id) {
 
     }
+
+    @Override
+    public void onDestroy() {
+        ImageCache.clearCache();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
 }

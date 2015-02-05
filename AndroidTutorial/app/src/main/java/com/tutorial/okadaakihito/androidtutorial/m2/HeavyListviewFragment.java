@@ -3,9 +3,12 @@ package com.tutorial.okadaakihito.androidtutorial.m2;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -91,6 +94,13 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        // Save metrix
+        WindowManager windowManager = getActivity().getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+        MetrixCache.setMetrix(displayMetrics);
+
         ListTemplateAdapter adapter = null;        //独自のアダプタを作成
 
         String[] from_template = {"url","viewImage"};
@@ -153,8 +163,7 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         ImageCache.clearCache();
         super.onDestroyView();
     }
-
-    @Override
+    
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
