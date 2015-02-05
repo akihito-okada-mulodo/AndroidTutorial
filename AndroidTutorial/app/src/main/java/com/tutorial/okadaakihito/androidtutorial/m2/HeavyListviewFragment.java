@@ -163,7 +163,7 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         ImageCache.clearCache();
         super.onDestroyView();
     }
-
+    
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
