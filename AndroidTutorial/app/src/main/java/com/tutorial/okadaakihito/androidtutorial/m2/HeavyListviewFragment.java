@@ -38,7 +38,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = Constant.IMAGE_URL;
-    private static final String ARG_PARAM2 = Constant.IMAGE_URL;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -63,7 +62,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         HeavyListviewFragment fragment = new HeavyListviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +79,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
         // TODO: Change Adapter to display your content
@@ -118,7 +115,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         for (int i=0;i<1000;i++) {
             mMap.put("id", String.valueOf(i));
             mMap.put("url", ARG_PARAM1);
-            mMap.put("viewImage", ARG_PARAM2);
             mData.add(mMap);
         }
 
@@ -129,8 +125,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
 
             list_group.setFocusable(false);
             list_group.setAdapter(adapter);
-            list_group.setScrollingCacheEnabled(false);
-            list_group.setTextFilterEnabled(true);
 
             list_group.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

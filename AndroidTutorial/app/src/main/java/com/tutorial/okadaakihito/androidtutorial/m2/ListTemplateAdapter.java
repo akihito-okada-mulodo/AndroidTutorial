@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.tutorial.okadaakihito.androidtutorial.R;
 
@@ -45,7 +44,6 @@ class ListTemplateAdapter extends SimpleAdapter {
 
         Map<String, Object> settingData = items.get(position);
 
-        TextView textUrl = (TextView)v.findViewById(R.id.TextUrl);
         ImageView imageView = (ImageView)v.findViewById(R.id.ImageThumb);
         ProgressBar waitBar = (ProgressBar)v.findViewById(R.id.WaitBar);
 
@@ -53,10 +51,8 @@ class ListTemplateAdapter extends SimpleAdapter {
         waitBar.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.GONE);
 
-        //実際に使用する画像のURLを保持
-        textUrl.setText(settingData.get("url").toString());
         //リスト表示用画像のURLを取得
-        String thumbUrl = settingData.get("viewImage").toString();
+        String thumbUrl = settingData.get("url").toString();
 
         //仮の画像設定
         imageView.setImageDrawable(context.getResources().getDrawable(android.R.drawable.ic_menu_gallery));
