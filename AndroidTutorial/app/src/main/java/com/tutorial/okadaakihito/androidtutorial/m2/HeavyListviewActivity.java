@@ -8,8 +8,6 @@ import com.tutorial.okadaakihito.androidtutorial.R;
 
 public class HeavyListviewActivity extends ActionBarActivity implements HeavyListviewFragment.OnFragmentInteractionListener{
 
-    private String urlString = "http://beauty.geocities.jp/kira_eos/etc/may/tome2.jpg";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
