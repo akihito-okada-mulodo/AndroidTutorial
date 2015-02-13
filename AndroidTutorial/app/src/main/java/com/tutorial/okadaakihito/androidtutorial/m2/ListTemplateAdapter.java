@@ -11,7 +11,6 @@ import android.widget.SimpleAdapter;
 import com.tutorial.okadaakihito.androidtutorial.R;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,15 +22,11 @@ class ListTemplateAdapter extends SimpleAdapter {
     private ArrayList<Map<String, Object>> items;
 
     //コンストラクタ
-    public ListTemplateAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from, int[] to) {
+    public ListTemplateAdapter(Context context, ArrayList<Map<String, Object>> data, int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
         this.context = context;
+        this.items = data;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public void setListData(ArrayList<Map<String, Object>> data){
-        //データ内容を保持しておく
-        items = data;
     }
 
     @Override
