@@ -2,22 +2,19 @@ package com.tutorial.okadaakihito.androidtutorial.m2;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.tutorial.okadaakihito.androidtutorial.R;
-import com.tutorial.okadaakihito.androidtutorial.m2.dummy.DummyContent;
 import com.tutorial.okadaakihito.androidtutorial.model.Constant;
 
 import java.util.ArrayList;
@@ -33,38 +30,24 @@ import java.util.Map;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class HeavyListviewFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class HeavyListviewFragment extends Fragment implements ListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = Constant.IMAGE_URL;
+    private static final String ARG_PARAM1 = Constant.IMAGE_URL1;
+    private static final String ARG_PARAM2 = Constant.IMAGE_URL2;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<Map<String, Object>> mData;
-
+    private ArrayList<Map<String, Object>> mData = new ArrayList<Map<String, Object>>();;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshEmptyViewLayout;
     private OnFragmentInteractionListener mListener;
+    private ListTemplateAdapter mAdapter = null;
 
     /**
      * The fragment's ListView/GridView.
      */
-    private AbsListView mListView;
-
-    /**
-     * The Adapter which will be used to populate the ListView/GridView with
-     * Views.
-     */
-    private ListAdapter mAdapter;
-
-    // TODO: Rename and change types of parameters
-    public static HeavyListviewFragment newInstance(String param1, String param2) {
-        HeavyListviewFragment fragment = new HeavyListviewFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ListView mListView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -80,10 +63,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
 
     @Override
@@ -98,63 +77,55 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
         display.getMetrics(displayMetrics);
         MetrixCache.setMetrix(displayMetrics);
 
-        ListTemplateAdapter adapter = null;        //独自のアダプタを作成
+        // SwipeRefreshLayoutの設定
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        mSwipeRefreshEmptyViewLayout = (SwipeRefreshLayout) view.findViewById(R.id.refreshEmptyView);
+
+        setSwipeRefreshLayout(mSwipeRefreshLayout);
+        setSwipeRefreshLayout(mSwipeRefreshEmptyViewLayout);
 
         String[] from_template = {"url","viewImage"};
         int[] to_template = {R.id.TextUrl, R.id.ImageThumb};
 
+        mAdapter = new ListTemplateAdapter(getActivity().getApplicationContext(), mData, R.layout.listview_template, from_template, to_template);
+        refreshListViewData();
+
         //画面のリストビュー
-        ListView list_group = (ListView) view.findViewById(android.R.id.list);
+        mListView = (ListView) view.findViewById(R.id.listView);
+        mListView.setEmptyView(mSwipeRefreshEmptyViewLayout);
+        mListView.setFocusable(false);
+        mListView.setAdapter(mAdapter);
 
-        //テンプレートのリスト取得
-        mData = new ArrayList<Map<String, Object>>();
-        Map<String, Object> mMap;
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ImageCache.clearCache();
+            }
+        });
 
-        //データの設定（仮・データ件数毎の設定）
-        mMap = new HashMap<String, Object>();
-        for (int i=0;i<1000;i++) {
-            mMap.put("id", String.valueOf(i));
-            mMap.put("url", ARG_PARAM1);
-            mData.add(mMap);
-        }
+        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ImageCache.clearCache();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        adapter = new ListTemplateAdapter(getActivity().getApplicationContext(), mData, R.layout.listview_template, from_template, to_template);
-
-        if(mData != null && mData.size() > 0){
-            adapter.setListData(mData);    //テンプレートにデータ内容を保持
-
-            list_group.setFocusable(false);
-            list_group.setAdapter(adapter);
-
-            list_group.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //リスト選択時の処理
-                    ImageCache.clearCache();
-                    //終了処理
-                }
-            });
-
-            list_group.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    //リスト選択時の処理
-                    ImageCache.clearCache();
-                    //終了処理
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-        }
+            }
+        });
 
         return view;
+    }
+
+    private void setSwipeRefreshLayout(SwipeRefreshLayout swipeRefreshLayout){
+        swipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
+        swipeRefreshLayout.setColorSchemeResources(R.color.red, R.color.green, R.color.blue, R.color.yellow);
     }
 
     @Override
     public void onDestroyView() {
         ImageCache.clearCache();
+        MetrixCache.clearMetrix();
         super.onDestroyView();
     }
     
@@ -185,19 +156,6 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
     }
 
     /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
-        }
-    }
-
-    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
@@ -208,7 +166,48 @@ public class HeavyListviewFragment extends Fragment implements AbsListView.OnIte
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
+    }
+
+    private SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ImageCache.clearCache();
+                    refreshListViewData1();
+                    mAdapter.notifyDataSetChanged();
+                    mSwipeRefreshLayout.setRefreshing(false);
+                    mSwipeRefreshEmptyViewLayout.setRefreshing(false);
+                }
+            }, 3000);
+        }
+    };
+
+    private void refreshListViewData() {
+        //テンプレートのリスト取得
+        Map<String, Object> mMap;
+        mData.clear();
+        //データの設定（仮・データ件数毎の設定）
+        mMap = new HashMap<String, Object>();
+        for (int i=0;i<1000;i++) {
+            mMap.put("id", String.valueOf(i));
+            mMap.put("url", ARG_PARAM1);
+            mData.add(mMap);
+        }
+    }
+
+    private void refreshListViewData1() {
+        //テンプレートのリスト取得
+        Map<String, Object> mMap;
+        mData.clear();
+        //データの設定（仮・データ件数毎の設定）
+        mMap = new HashMap<String, Object>();
+        for (int i=0;i<1000;i++) {
+            mMap.put("id", String.valueOf(i));
+            mMap.put("url", ARG_PARAM2);
+            mData.add(mMap);
+        }
     }
 }

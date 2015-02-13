@@ -17,4 +17,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="tutorial_1">01. 画面遷移サンプル</string>
     <string name="tutorial_2">02. リストビューサンプル</string>
+    <string name="empty">empty !!</string>
 </resources>
